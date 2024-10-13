@@ -12,8 +12,7 @@ def emotion_detector(text_to_analyse):
         emotions = data['emotionPredictions'][0]['emotion']
         dominant_emotion = max(emotions, key=emotions.get)
 
-        # Formatting the output
-        formatted_response = {
+        return {
             'anger': emotions['anger'],
             'disgust': emotions['disgust'],
             'fear': emotions['fear'],
@@ -21,16 +20,7 @@ def emotion_detector(text_to_analyse):
             'sadness': emotions['sadness'],
             'dominant_emotion': dominant_emotion
         }
-        
-        # Print formatted output
-        print("Emotion Scores:")
-        for emotion, score in formatted_response.items():
-            if emotion != 'dominant_emotion':
-                print(f"{emotion.title()}: {score}")
-        print("\nDominant Emotion:", formatted_response['dominant_emotion'].title())
-        
-        return formatted_response  # Optionally return the data if needed elsewhere
-    else:
-        # Handle other status codes with an appropriate error response
-        print(f'Error: Status code {response.status_code}: {response.reason}')
-        return None
+    elif response.status_code == 400:
+        return {key: None for key in ['anger', 'disgust', 'fear', 'joy', 'sadness', 'dominant_emotion']}
+
+    return {'error': f'Unhandled error: {response.status_code}'}
